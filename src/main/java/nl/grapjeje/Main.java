@@ -9,11 +9,15 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.world.DimensionType;
+import nl.grapjeje.game.SkyWarsGame;
 
 public class Main {
     @Getter
     @Setter
     private static InstanceContainer instanceContainer;
+    @Getter
+    @Setter
+    private static SkyWarsGame game;
 
     public static void main(String[] args) {
         // Initialize server
@@ -41,5 +45,7 @@ public class Main {
 
         // Start
         server.start("0.0.0.0", 25565);
+
+        setGame(new SkyWarsGame());
     }
 }
