@@ -1,3 +1,3 @@
 # Threading Code
 
-All the threading code has been mada by [legofreak107](https://github.com/legofreak107).
+All the threading code has been made by [legofreak107](https://github.com/legofreak107).
