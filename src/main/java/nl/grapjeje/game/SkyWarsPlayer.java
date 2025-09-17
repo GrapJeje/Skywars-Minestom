@@ -25,11 +25,9 @@ public class SkyWarsPlayer {
     }
 
     public static SkyWarsPlayer get(Player player) {
-        SkyWarsPlayer temp = initPlayers.stream()
+        return initPlayers.stream()
                 .filter(sp -> sp.getBasePlayer().equals(player))
                 .findFirst()
-                .orElse(null);
-        if (temp == null) return new SkyWarsPlayer(player, PlayerState.IN_LOBBY);
-        else return temp;
+                .orElse(new SkyWarsPlayer(player, PlayerState.IN_LOBBY));
     }
 }

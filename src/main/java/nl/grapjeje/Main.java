@@ -10,6 +10,7 @@ import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.world.DimensionType;
 import nl.grapjeje.game.SkyWarsGame;
+import nl.grapjeje.threading.ThreadingManager;
 
 public class Main {
     @Getter
@@ -37,11 +38,19 @@ public class Main {
                     unit.modifier().setBlock(x, 0, z, Block.GRASS_BLOCK);
                 }
             }
+
+            unit.modifier().setBlock(
+                    unit.absoluteStart().add(10, 1, 0),
+                    Block.CHEST
+            );
         });
         setInstanceContainer(instance);
 
         // Register Listeners
         new ListenManager().init();
+
+        // Start threading
+        new ThreadingManager();
 
         // Start
         server.start("0.0.0.0", 25565);
