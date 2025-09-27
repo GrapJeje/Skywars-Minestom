@@ -100,35 +100,35 @@ public enum ItemTable {
         int level = selected.randomEnchantmentLvl();
         if (level == 0) level = 1;
 
-        switch (stack.material()) {
-            case WOODEN_SWORD, STONE_SWORD, IRON_SWORD, DIAMOND_SWORD -> {
-                stack.with(DataComponents.ENCHANTMENTS)
-            }
-            case BOW -> {
-                EnchantedItemMeta meta = (EnchantedItemMeta) stack.meta();
-                meta.addEnchantment(Enchantment.ARROW_DAMAGE, level); // Power
-                stack.setMeta(meta);
-            }
-            case LEATHER_HELMET, LEATHER_CHESTPLATE, LEATHER_LEGGINGS, LEATHER_BOOTS,
-                 Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS,
-                 IRON_HELMET, IRON_CHESTPLATE, IRON_LEGGINGS, IRON_BOOTS,
-                 DIAMOND_HELMET, DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS -> {
-                EnchantedItemMeta meta = (EnchantedItemMeta) stack.meta();
-                meta.addEnchantment(Enchantment.PROTECTION, level);
-                stack.setMeta(meta);
-            }
-            default -> { /* andere items geen enchantment */ }
-        }
+//        switch (stack.material()) {
+//            case WOODEN_SWORD, STONE_SWORD, IRON_SWORD, DIAMOND_SWORD -> {
+//                stack.with(DataComponents.ENCHANTMENTS);
+//            }
+//            case BOW -> {
+//                EnchantedItemMeta meta = (EnchantedItemMeta) stack.meta();
+//                meta.addEnchantment(Enchantment.ARROW_DAMAGE, level); // Power
+//                stack.setMeta(meta);
+//            }
+//            case LEATHER_HELMET, LEATHER_CHESTPLATE, LEATHER_LEGGINGS, LEATHER_BOOTS,
+//                 Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS,
+//                 IRON_HELMET, IRON_CHESTPLATE, IRON_LEGGINGS, IRON_BOOTS,
+//                 DIAMOND_HELMET, DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS -> {
+//                EnchantedItemMeta meta = (EnchantedItemMeta) stack.meta();
+//                meta.addEnchantment(Enchantment.PROTECTION, level);
+//                stack.setMeta(meta);
+//            }
+//            default -> { /* andere items geen enchantment */ }
+//        }
 
         return stack;
     }
 
 
-    public static ItemStack createEnchantedItem(Material mat, int amount, Enchantment enchantment, int level) {
-        ItemStack item = ItemStack.builder(mat)
-                .amount(amount)
-                .set(DataComponents.ENCHANTMENTS, List.of(new Component(enchantment, level)))
-                .build();
-        return item;
-    }
+//    public static ItemStack createEnchantedItem(Material mat, int amount, Enchantment enchantment, int level) {
+//        ItemStack item = ItemStack.builder(mat)
+//                .amount(amount)
+//                .set(DataComponents.ENCHANTMENTS, List.of(new Component(enchantment, level)))
+//                .build();
+//        return item;
+//    }
 }

@@ -2,13 +2,20 @@ package nl.grapjeje.game;
 
 import lombok.Getter;
 import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Entity;
+import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.metadata.display.TextDisplayMeta;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.sound.SoundEvent;
+import net.minestom.server.timer.TaskSchedule;
+import nl.grapjeje.threading.threads.TimedRepeatingDelayedThread;
 
 import java.util.*;
 
@@ -19,9 +26,15 @@ public class SkyWarsChest {
     private Pos pos;
     private Inventory inventory;
 
+    private long cooldownEnd = 0;
+    private Entity hologram;
+
+    private boolean filled;
+
     private SkyWarsChest(Pos pos, Inventory inv) {
         this.pos = pos;
         this.inventory = inv;
+        this.filled = false;
 
         chests.add(this);
     }
@@ -54,10 +67,15 @@ public class SkyWarsChest {
             usedSlots.add(slot);
             inventory.setItemStack(slot, item);
         }
+        this.filled = true;
     }
 
     public void open(Player player) {
-        this.supply();
+        if (!this.isFilled()) {
+            this.supply();
+            cooldownEnd = System.currentTimeMillis() + 120_000;
+            this.startTimer();
+        }
 
         player.openInventory(this.getInventory());
         player.playSound(
@@ -67,6 +85,44 @@ public class SkyWarsChest {
                         1f, 1f
                 )
         );
+    }
+
+    private TimedRepeatingDelayedThread cooldownTextThread;
+
+    private void startTimer() {
+        hologram = new Entity(EntityType.TEXT_DISPLAY);
+        hologram.setInstance(
+                MinecraftServer.getInstanceManager().getInstances().iterator().next(),
+                pos.add(0.5, 1.5, 0.5)
+        );
+
+        TextDisplayMeta meta = (TextDisplayMeta) hologram.getEntityMeta();
+        meta.setText(Component.text("§40:00"));
+        meta.setSeeThrough(true);
+        meta.setBackgroundColor(0x00000000);
+
+        cooldownTextThread = new TimedRepeatingDelayedThread(() -> {
+            long remaining = (cooldownEnd - System.currentTimeMillis()) / 1000;
+            if (remaining <= 0) {
+                cooldownTextThread.setCancelled(true);
+                cooldownTextThread = null;
+                this.filled = false;
+                this.supply();
+                hologram.remove();
+                return;
+            }
+
+            long minutes = remaining / 60;
+            long seconds = remaining % 60;
+            String time = String.format("%d:%02d", minutes, seconds);
+
+            meta.setText(Component.text("§4" + time));
+        }, 1000, -1, 0);
+    }
+
+    public boolean isEmpty() {
+        return Arrays.stream(inventory.getItemStacks())
+                .allMatch(item -> item == null || item.material() == Material.AIR);
     }
 
     public class itemTable {
